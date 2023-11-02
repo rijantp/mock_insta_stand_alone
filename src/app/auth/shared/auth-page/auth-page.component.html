@@ -1,0 +1,15 @@
+<div class="container">
+  <div class="background">
+    <img
+      src="../../assets/nathan-da-silva-k-rKfqSm4L4-unsplash.jpg"
+      alt="photo"
+    />
+  </div>
+  <div class="login">
+    <app-login-form
+      [button]="button"
+      (submit)="submit.emit($event)"
+    ></app-login-form>
+    <a [routerLink]="[pageInfo?.path]">{{ pageInfo?.message }}</a>
+  </div>
+</div>
