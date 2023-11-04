@@ -58,6 +58,12 @@ const authFeature = createFeature({
         loggedInUser: action.loggedInUser,
       }
     }),
+    on(authActions.removeUserFromLocalstorage, (state) => {
+      return {
+        ...state,
+        loggedInUser: undefined,
+      }
+    }),
   ),
 })
 

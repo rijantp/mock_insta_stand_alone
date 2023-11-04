@@ -23,5 +23,6 @@ export const authActions = createActionGroup({
     'signin failure': props<{ error: BackendErrorInterface }>(),
     'login failure': props<{ error: BackendErrorInterface }>(),
     'set user from localstorage': props<{ loggedInUser: UserInfoInterface }>(),
+    'remove user from localstorage': emptyProps,
   },
 })

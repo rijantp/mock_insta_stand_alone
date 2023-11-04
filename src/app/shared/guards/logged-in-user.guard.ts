@@ -3,22 +3,21 @@ import { CanActivateFn, Router } from '@angular/router'
 import { Store } from '@ngrx/store'
 import { map, tap } from 'rxjs'
 import { selectLoggedInUser } from 'src/app/auth/store/reducer'
-import { UserInfoInterface } from '../types/user-info.interface'
 import { RoutesEnum } from '../constants/routes.enum'
+import { UserInfoInterface } from '../types/user-info.interface'
 
-export const authGuard: CanActivateFn = (
+export const loggedInUserGuard: CanActivateFn = (
   route,
   state,
   store = inject(Store),
   router = inject(Router),
 ) => {
-  const isAuth: boolean = route.data['isAuth']
   return store.select(selectLoggedInUser).pipe(
     map((user: UserInfoInterface | undefined | null) => {
-      return !(user === undefined || user === null)
+      return user === undefined || user === null
     }),
-    tap((hasLoggedIn: boolean) => {
-      if (!hasLoggedIn) router.navigate([RoutesEnum.AUTH])
+    tap((isNotLoggedIn: boolean) => {
+      if (!isNotLoggedIn) router.navigate([RoutesEnum.HOME])
     }),
   )
 }

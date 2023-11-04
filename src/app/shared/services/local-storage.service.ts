@@ -21,4 +21,8 @@ export class LocalStorageService {
       return null
     }
   }
+
+  reset(key: string): void {
+    localStorage.removeItem(key)
+  }
 }

@@ -1,10 +1,12 @@
 import { Routes } from '@angular/router'
 import { authGuard } from './shared/guards/auth.guard'
+import { loggedInUserGuard } from './shared/guards/logged-in-user.guard'
 
 export const appRoutes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'auth' },
   {
     path: 'auth',
+    canActivate: [loggedInUserGuard],
     loadChildren: () => import('./auth/auth.routes').then((m) => m.authRoutes),
   },
   {

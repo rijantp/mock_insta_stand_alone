@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store'
 import { authActions } from '../auth/store/action'
 import { UserInfoInterface } from '../shared/types/user-info.interface'
 
-function initializeUser(
+export function initializeUser(
   storageService: LocalStorageService,
   store: Store,
 ): () => Observable<any> {
