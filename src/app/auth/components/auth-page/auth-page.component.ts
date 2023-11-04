@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core'
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { LogInFormComponent } from '../log-in-form/login-form.component'
 import { LogInFormInterface } from '../../types/login-form.interface'
@@ -12,16 +12,15 @@ import { RouterLink } from '@angular/router'
   imports: [CommonModule, LogInFormComponent, RouterLink],
   templateUrl: './auth-page.component.html',
   styleUrls: ['./auth-page.component.scss'],
+
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthPageComponent {
   button: string = ''
   pageInfo: AuthPageInterface | undefined
-  @Output() submit: EventEmitter<LogInFormInterface> =
-    new EventEmitter<LogInFormInterface>()
 
   @Input() set formType(form: string) {
-    this.button = form
-
     this.pageInfo = FORM_MESSAGE.get(form)
+    this.button = form
   }
 }

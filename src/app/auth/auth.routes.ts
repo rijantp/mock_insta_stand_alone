@@ -5,11 +5,15 @@ export const authRoutes: Routes = [
   {
     path: 'login',
     loadComponent: () =>
-      import('./login/login.component').then((m) => m.LoginComponent),
+      import('./components/login/login.component').then(
+        (m) => m.LoginComponent,
+      ),
   },
   {
     path: 'signin',
     loadComponent: () =>
-      import('./signin/signin.component').then((m) => m.SigninComponent),
+      import('./components/signin/signin.component').then(
+        (m) => m.SigninComponent,
+      ),
   },
 ]

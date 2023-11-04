@@ -4,6 +4,7 @@ import { LogInFormInterface } from '../types/login-form.interface'
 import { Observable } from 'rxjs'
 import { environment } from 'src/environment/environment'
 import { UserInfoInterface } from 'src/app/shared/types/user-info.interface'
+import { SigninFormInterface } from '../types/signin-form.interface'
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,9 @@ import { UserInfoInterface } from 'src/app/shared/types/user-info.interface'
 export class AuthService {
   http = inject(HttpClient)
 
-  signinUser(body: LogInFormInterface): Observable<UserInfoInterface> {
+  signinUser(body: SigninFormInterface): Observable<UserInfoInterface> {
+    console.log('signi called')
+
     return this.http.post<UserInfoInterface>(
       `${environment.base_api_url}/users/signin`,
       body,

@@ -1,0 +1,70 @@
+<form [formGroup]="loginForm" class="form">
+  <mat-form-field
+    *ngIf="button === formType.SIGNIN"
+    color="accent"
+    appearance="outline"
+  >
+    <mat-label>Name</mat-label>
+    <input formControlName="name" type="text" matInput placeholder="name" />
+    <mat-icon matSuffix>home</mat-icon>
+    <mat-error *ngIf="loginForm.controls['name'].hasError('required')"
+      >Name is required</mat-error
+    >
+  </mat-form-field>
+  <mat-form-field color="accent" appearance="outline">
+    <mat-label>Email</mat-label>
+    <input formControlName="email" type="email" matInput placeholder="email" />
+    <mat-icon matSuffix>email</mat-icon>
+    <mat-error *ngIf="loginForm.controls['email'].hasError('required')"
+      >Email is required</mat-error
+    >
+    <mat-error *ngIf="loginForm.controls['email'].hasError('email')"
+      >Please check email, invalid format</mat-error
+    >
+  </mat-form-field>
+  <mat-form-field color="accent" appearance="outline">
+    <mat-label>Password</mat-label>
+    <input
+      formControlName="password"
+      type="password"
+      matInput
+      placeholder="password"
+    />
+    <mat-icon matSuffix>password</mat-icon>
+    <mat-error *ngIf="loginForm.controls['password'].hasError('required')"
+      >Password is required</mat-error
+    >
+  </mat-form-field>
+  <mat-form-field
+    *ngIf="button === formType.SIGNIN"
+    color="accent"
+    appearance="outline"
+  >
+    <mat-label>Confirm Password</mat-label>
+    <input
+      formControlName="confirmPassword"
+      type="password"
+      matInput
+      placeholder="confirm password"
+      [errorStateMatcher]="confirmValidParentMatcher"
+    />
+    <mat-icon matSuffix>password</mat-icon>
+    <mat-error
+      *ngIf="loginForm.controls['confirmPassword'].hasError('required')"
+      >Please re-enter your password</mat-error
+    >
+    <mat-error *ngIf="loginForm.hasError('passwordMisMatch')"
+      >Password entered is different</mat-error
+    >
+  </mat-form-field>
+</form>
+<div class="form-btn">
+  <button
+    [disabled]="(isSubmitting$ | async) || !loginForm.valid"
+    (click)="onSubmit()"
+    mat-button
+    color="accent"
+  >
+    {{ button }}
+  </button>
+</div>
