@@ -3,5 +3,8 @@
   "singleQuote": true,
   "printWidth": 80,
   "bracketSpacing": true,
-  "semi": false
+  "semi": false,
+  "importOrder": ["^components/(.*)$", "^[./]"],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
 }

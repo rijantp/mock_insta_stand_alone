@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatInputModule } from '@angular/material/input'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatButtonModule } from '@angular/material/button'
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar'
 import {
   FormControl,
   FormGroup,
@@ -20,18 +21,21 @@ import {
 } from '@angular/forms'
 import { LoginFormGroupInterface } from '../../types/login-formgroup.interface'
 import { UsersListComponent } from 'src/app/users-list/users-list.component'
-import { Observable, iif } from 'rxjs'
+import { Observable, takeUntil, Subject } from 'rxjs'
 import { FormTypeEnum } from '../../constants/form-type.enum'
 import { confirmPassword } from '../../validators/confirm-password.validator'
 import { CommonModule } from '@angular/common'
-import { ErrorStateMatcher } from '@angular/material/core'
 import { LogInFormInterface } from '../../types/login-form.interface'
 import { SigninFormInterface } from '../../types/signin-form.interface'
 import { Store } from '@ngrx/store'
 import { authActions } from '../../store/action'
 import { AuthStateInterface } from '../../types/auth-state.interface'
-import { selectIsSubmitting } from '../../store/reducer'
+import {
+  selectBackendValidation,
+  selectIsSubmitting,
+} from '../../store/reducer'
 import { ConfirmValidParentMatcher } from 'src/app/shared/validators/error-state-matcher'
+import { BackendErrorInterface } from '../../types/backend-error.interface'
 
 @Component({
   selector: 'app-login-form',
@@ -44,6 +48,7 @@ import { ConfirmValidParentMatcher } from 'src/app/shared/validators/error-state
     ReactiveFormsModule,
     UsersListComponent,
     CommonModule,
+    MatSnackBarModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './login-form.component.html',
@@ -56,7 +61,9 @@ export class LogInFormComponent implements OnInit, OnChanges {
   confirmValidParentMatcher = new ConfirmValidParentMatcher()
 
   private store = inject(Store<{ auth: AuthStateInterface }>)
+  private snackBar: MatSnackBar = inject(MatSnackBar)
 
+  private unsubscribe$: Subject<void> = new Subject()
   isSubmitting$: Observable<boolean> = this.store.select(selectIsSubmitting)
 
   loginForm: FormGroup = new FormGroup<LoginFormGroupInterface>(
@@ -78,7 +85,9 @@ export class LogInFormComponent implements OnInit, OnChanges {
         validators: [Validators.required],
       }),
     },
-    { validators: [confirmPassword] },
+    {
+      validators: [confirmPassword],
+    },
   )
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -97,7 +106,17 @@ export class LogInFormComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.loginForm.controls['name'].statusChanges.subscribe()
+    this.loginForm.controls['name'].statusChanges
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe()
+    this.store
+      .select(selectBackendValidation)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((error: BackendErrorInterface | null) => {
+        if (error) {
+          this.snackBar.open(error.message, undefined, { duration: 3000 })
+        }
+      })
   }
 
   onSubmit(): void {
@@ -112,7 +131,15 @@ export class LogInFormComponent implements OnInit, OnChanges {
     }
 
     this.button === FormTypeEnum.LOGIN
-      ? this.store.dispatch(authActions.login({ request: loginValue }))
-      : this.store.dispatch(authActions.signin({ request: signinValue }))
+      ? this.store.dispatch(
+          authActions.login({
+            request: loginValue,
+          }),
+        )
+      : this.store.dispatch(
+          authActions.signin({
+            request: signinValue,
+          }),
+        )
   }
 }

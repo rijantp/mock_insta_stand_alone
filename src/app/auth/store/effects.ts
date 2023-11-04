@@ -7,6 +7,7 @@ import { UserInfoInterface } from 'src/app/shared/types/user-info.interface'
 import { LocalStorageService } from 'src/app/shared/services/local-storage.service'
 import { Router } from '@angular/router'
 import { RoutesEnum } from 'src/app/shared/constants/routes.enum'
+import { HttpErrorResponse } from '@angular/common/http'
 
 export const signinEffect = createEffect(
   (
@@ -24,8 +25,34 @@ export const signinEffect = createEffect(
             router.navigate([RoutesEnum.HOME])
             return authActions.signinSuccess({ loggedInUser: currentUser })
           }),
-          catchError((error) => {
-            return of(authActions.signinFailure({ error: error }))
+          catchError((error: HttpErrorResponse) => {
+            return of(authActions.signinFailure({ error: error.error }))
+          }),
+        )
+      }),
+    )
+  },
+  { functional: true },
+)
+
+export const loginEffect = createEffect(
+  (
+    actions$ = inject(Actions),
+    authService = inject(AuthService),
+    storageService = inject(LocalStorageService),
+    router = inject(Router),
+  ) => {
+    return actions$.pipe(
+      ofType(authActions.login),
+      switchMap(({ request }) => {
+        return authService.logInUser(request).pipe(
+          map((currentUser: UserInfoInterface) => {
+            storageService.set('loggedinUser', currentUser)
+            router.navigate([RoutesEnum.HOME])
+            return authActions.loginSuccess({ loggedInUser: currentUser })
+          }),
+          catchError((error: HttpErrorResponse) => {
+            return of(authActions.loginFailure({ error: error.error }))
           }),
         )
       }),
