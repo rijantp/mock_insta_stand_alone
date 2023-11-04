@@ -52,6 +52,12 @@ const authFeature = createFeature({
         loggedInUser: null,
       }
     }),
+    on(authActions.setUserFromLocalstorage, (state, action) => {
+      return {
+        ...state,
+        loggedInUser: action.loggedInUser,
+      }
+    }),
   ),
 })
 

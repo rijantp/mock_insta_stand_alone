@@ -20,7 +20,6 @@ import {
 } from '@angular/forms'
 import { LoginFormGroupInterface } from '../../types/login-formgroup.interface'
 import { UsersListComponent } from 'src/app/users-list/users-list.component'
-import { AuthService } from '../../services/auth.service'
 import { Observable, iif } from 'rxjs'
 import { FormTypeEnum } from '../../constants/form-type.enum'
 import { confirmPassword } from '../../validators/confirm-password.validator'
@@ -32,6 +31,7 @@ import { Store } from '@ngrx/store'
 import { authActions } from '../../store/action'
 import { AuthStateInterface } from '../../types/auth-state.interface'
 import { selectIsSubmitting } from '../../store/reducer'
+import { ConfirmValidParentMatcher } from 'src/app/shared/validators/error-state-matcher'
 
 @Component({
   selector: 'app-login-form',
@@ -55,7 +55,6 @@ export class LogInFormComponent implements OnInit, OnChanges {
   formType: typeof FormTypeEnum = FormTypeEnum
   confirmValidParentMatcher = new ConfirmValidParentMatcher()
 
-  private service = inject(AuthService)
   private store = inject(Store<{ auth: AuthStateInterface }>)
 
   isSubmitting$: Observable<boolean> = this.store.select(selectIsSubmitting)
@@ -112,22 +111,8 @@ export class LogInFormComponent implements OnInit, OnChanges {
       name: this.loginForm.controls['name'].value,
     }
 
-    console.log('called')
-
     this.button === FormTypeEnum.LOGIN
       ? this.store.dispatch(authActions.login({ request: loginValue }))
       : this.store.dispatch(authActions.signin({ request: signinValue }))
-
-    // iif(
-    //   () => this.button === FormTypeEnum.LOGIN,
-    //   this.service.logInUser(loginValue),
-    //   this.service.signinUser(signinValue),
-    // ).subscribe()
-  }
-}
-
-export class ConfirmValidParentMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl): boolean {
-    return (control.parent?.invalid && control.touched) ?? false
   }
 }
