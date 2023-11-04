@@ -56,6 +56,7 @@ import { BackendErrorInterface } from '../../types/backend-error.interface'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LogInFormComponent implements OnInit, OnChanges {
+  hide: boolean = false
   @Input() button: string = ''
   formType: typeof FormTypeEnum = FormTypeEnum
   confirmValidParentMatcher = new ConfirmValidParentMatcher()
