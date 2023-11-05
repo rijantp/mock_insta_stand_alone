@@ -27,6 +27,9 @@
       <mat-error *ngIf="loginForm.controls['email'].hasError('email')"
         >Please check email, invalid format</mat-error
       >
+      <mat-error *ngIf="loginForm.controls['email'].hasError('userExists')"
+        >email already exists</mat-error
+      >
       <mat-error
         *ngIf="loginForm.controls['email'].hasError('unableToVerifyEmail')"
         >email verification failed, try later</mat-error
