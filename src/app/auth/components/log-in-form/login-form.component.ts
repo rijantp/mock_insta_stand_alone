@@ -36,6 +36,9 @@ import {
 } from '../../store/reducer'
 import { ConfirmValidParentMatcher } from 'src/app/shared/validators/error-state-matcher'
 import { BackendErrorInterface } from '../../types/backend-error.interface'
+import { emailValidator } from '../../../shared/validators/email.validator'
+import { AuthService } from '../../services/auth.service'
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 
 @Component({
   selector: 'app-login-form',
@@ -49,6 +52,7 @@ import { BackendErrorInterface } from '../../types/backend-error.interface'
     UsersListComponent,
     CommonModule,
     MatSnackBarModule,
+    MatProgressSpinnerModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './login-form.component.html',
@@ -57,12 +61,15 @@ import { BackendErrorInterface } from '../../types/backend-error.interface'
 })
 export class LogInFormComponent implements OnInit, OnChanges {
   hide: boolean = false
+  confirmPasswordHide = false
   @Input() button: string = ''
   formType: typeof FormTypeEnum = FormTypeEnum
   confirmValidParentMatcher = new ConfirmValidParentMatcher()
 
   private store = inject(Store<{ auth: AuthStateInterface }>)
   private snackBar: MatSnackBar = inject(MatSnackBar)
+
+  service = inject(AuthService)
 
   private unsubscribe$: Subject<void> = new Subject()
   isSubmitting$: Observable<boolean> = this.store.select(selectIsSubmitting)
@@ -76,6 +83,7 @@ export class LogInFormComponent implements OnInit, OnChanges {
       email: new FormControl('', {
         nonNullable: true,
         validators: [Validators.required, Validators.email],
+        asyncValidators: [emailValidator(this.service)],
       }),
       password: new FormControl('', {
         nonNullable: true,
@@ -100,6 +108,10 @@ export class LogInFormComponent implements OnInit, OnChanges {
           Validators.required,
         ])
         this.loginForm.controls['confirmPassword'].updateValueAndValidity()
+        this.loginForm.controls['email'].removeAsyncValidators([
+          emailValidator(this.service),
+        ])
+        this.loginForm.controls['email'].updateValueAndValidity()
         this.loginForm.removeValidators([confirmPassword])
         this.loginForm.updateValueAndValidity()
       }

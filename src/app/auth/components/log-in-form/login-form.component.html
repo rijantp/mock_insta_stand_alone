@@ -11,33 +11,33 @@
       >Name is required</mat-error
     >
   </mat-form-field>
-  <mat-form-field color="accent" appearance="outline">
-    <mat-label>Email</mat-label>
-    <input formControlName="email" type="email" matInput placeholder="email" />
-    <mat-icon matSuffix>email</mat-icon>
-    <mat-error *ngIf="loginForm.controls['email'].hasError('required')"
-      >Email is required</mat-error
-    >
-    <mat-error *ngIf="loginForm.controls['email'].hasError('email')"
-      >Please check email, invalid format</mat-error
-    >
-  </mat-form-field>
+  <div class="container-spinner">
+    <mat-form-field color="accent" appearance="outline">
+      <mat-label>Email</mat-label>
+      <input
+        formControlName="email"
+        type="email"
+        matInput
+        placeholder="email"
+      />
+      <mat-icon matSuffix>email</mat-icon>
+      <mat-error *ngIf="loginForm.controls['email'].hasError('required')"
+        >Email is required</mat-error
+      >
+      <mat-error *ngIf="loginForm.controls['email'].hasError('email')"
+        >Please check email, invalid format</mat-error
+      >
+      <mat-error
+        *ngIf="loginForm.controls['email'].hasError('unableToVerifyEmail')"
+        >email verification failed, try later</mat-error
+      >
+    </mat-form-field>
 
-  <!-- 
-
-  <mat-form-field color="accent" appearance="outline">
-    <mat-label>Password</mat-label>
-    <input
-      formControlName="password"
-      type="password"
-      matInput
-      placeholder="password"
-    />
-    <mat-icon matSuffix>password</mat-icon>
-    <mat-error *ngIf="loginForm.controls['password'].hasError('required')"
-      >Password is required</mat-error
-    >
-  </mat-form-field> -->
+    <mat-spinner
+      color="accent"
+      *ngIf="(loginForm.controls['email'].statusChanges | async) === 'PENDING'"
+    ></mat-spinner>
+  </div>
 
   <mat-form-field color="accent" appearance="outline">
     <mat-label>Password</mat-label>
@@ -71,10 +71,21 @@
       formControlName="confirmPassword"
       type="password"
       matInput
+      [type]="confirmPasswordHide ? 'password' : 'text'"
       placeholder="confirm password"
       [errorStateMatcher]="confirmValidParentMatcher"
     />
-    <mat-icon matSuffix>password</mat-icon>
+    <button
+      mat-icon-button
+      matSuffix
+      (click)="confirmPasswordHide = !confirmPasswordHide"
+      [attr.aria-label]="'Hide password'"
+      [attr.aria-pressed]="confirmPasswordHide"
+    >
+      <mat-icon>{{
+        confirmPasswordHide ? 'visibility_off' : 'visibility'
+      }}</mat-icon>
+    </button>
     <mat-error
       *ngIf="loginForm.controls['confirmPassword'].hasError('required')"
       >Please re-enter your password</mat-error

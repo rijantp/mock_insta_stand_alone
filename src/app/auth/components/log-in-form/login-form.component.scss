@@ -8,4 +8,30 @@
 .form-btn {
   display: flex;
   justify-content: center;
+  flex-direction: column;
 }
+
+.container-spinner {
+  position: relative;
+}
+
+mat-spinner {
+  position: absolute;
+  height: 1.5rem !important;
+  width: 1.5rem !important;
+  left: 100%;
+  bottom: 50%;
+  margin-left: 1.5rem;
+}
+
+// .spinner-container {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// }
+
+// mat-spinner {
+//   height: 1.5rem !important;
+//   width: 1.5rem !important;
+//   margin-left: 1.5rem;
+// }
